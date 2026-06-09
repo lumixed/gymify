@@ -74,6 +74,9 @@ export default function CameraView() {
                     repCountRef.current += 1;
                     console.log("Rep counted! Total:", repCountRef.current);
                 }
+                canvasCtx.font = '48px Arial';
+                canvasCtx.fillStyle = 'red';
+                canvasCtx.fillText(`Reps: ${repCountRef.current}`, 10, 440);
             }
         });
 
@@ -99,7 +102,9 @@ export default function CameraView() {
                 height: '480px'
             }}></video>
             <canvas ref={canvasRef}
-                style={{ position: 'absolute', }}
+                style={{ 
+                    position: 'absolute',
+                }}
                 width={640}
                 height={480}
             ></canvas>
