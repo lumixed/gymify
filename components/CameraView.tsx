@@ -10,19 +10,15 @@ export default function CameraView() {
     const stageRef = useRef<'up' | 'down'>('up');
 
     useEffect(() => {
-        //console.log("useEffect running");
         const { Pose, POSE_CONNECTIONS } = require('@mediapipe/pose');
         const { drawConnectors, drawLandmarks } = require('@mediapipe/drawing_utils');
 
         const startCamera = async () => {
             try {
-                //console.log("useEffect running");
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } });
                 if (videoRef.current) {
                     videoRef.current.srcObject = stream;
-                    //console.log('Camera stream started');
                     videoRef.current.addEventListener('loadeddata', () => {
-                        //console.log("Video loaded, starting AI loop");
                         const sendToAI = async () => {
                             if (videoRef.current && videoRef.current.readyState >= 2) {
                                 await pose.send({ image: videoRef.current });
@@ -38,7 +34,7 @@ export default function CameraView() {
         }
 
         const pose = new Pose({
-            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+            locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
         });
 
         pose.setOptions({
@@ -48,8 +44,7 @@ export default function CameraView() {
             minTrackingConfidence: 0.5
         });
 
-        pose.onResults((results) => {
-            //console.log("AI running, landmarks found:", results.poseLandmarks?.length);
+        pose.onResults((results: any) => {
             const canvasCtx = canvasRef.current?.getContext('2d');
             if (!canvasCtx || !canvasRef.current) return;
 

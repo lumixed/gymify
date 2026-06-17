@@ -1,0 +1,40 @@
+.footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg-secondary);
+    padding: 40px 0;
+    margin-top: auto;
+}
+
+.inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
+}
+
+.tagline {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.copy {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .inner {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+}
