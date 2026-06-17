@@ -4,7 +4,11 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { calculateAngle } from './utils'
 import styles from './CameraView.module.css'
 
-export default function CameraView() {
+let poseInstance: any = null;
+let poseConnections: any = null;
+let drawFns: { drawConnectors: any; drawLandmarks: any } | null = null;
+
+export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?: string }) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const repCountRef = useRef(0);
@@ -13,6 +17,7 @@ export default function CameraView() {
     const poseRef = useRef<any>(null);
     const animFrameRef = useRef<number>(0);
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const initializedRef = useRef(false);
 
     const [isActive, setIsActive] = useState(false);
     const [reps, setReps] = useState(0);
@@ -29,33 +34,40 @@ export default function CameraView() {
     }, []);
 
     useEffect(() => {
-        const { Pose, POSE_CONNECTIONS } = require('@mediapipe/pose');
+        if (initializedRef.current) return;
+        initializedRef.current = true;
+
+        const { Pose, POSE_CONNECTIONS: connections } = require('@mediapipe/pose');
         const { drawConnectors, drawLandmarks } = require('@mediapipe/drawing_utils');
+        poseConnections = connections;
+        drawFns = { drawConnectors, drawLandmarks };
 
-        const pose = new Pose({
-            locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
-        });
-        poseRef.current = pose;
+        if (!poseInstance) {
+            poseInstance = new Pose({
+                locateFile: (file: string) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+            });
 
-        pose.setOptions({
-            modelComplexity: 1,
-            smoothLandmarks: true,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
-        });
+            poseInstance.setOptions({
+                modelComplexity: 1,
+                smoothLandmarks: true,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
+            });
+        }
+        poseRef.current = poseInstance;
 
-        pose.onResults((results: any) => {
+        poseInstance.onResults((results: any) => {
             const canvasCtx = canvasRef.current?.getContext('2d');
-            if (!canvasCtx || !canvasRef.current) return;
+            if (!canvasCtx || !canvasRef.current || !drawFns) return;
 
             canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
             if (results.poseLandmarks) {
-                drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
+                drawFns.drawConnectors(canvasCtx, results.poseLandmarks, poseConnections, {
                     color: '#c8f542',
                     lineWidth: 3
                 });
-                drawLandmarks(canvasCtx, results.poseLandmarks, {
+                drawFns.drawLandmarks(canvasCtx, results.poseLandmarks, {
                     color: '#ffffff',
                     lineWidth: 1,
                     radius: 4
@@ -116,7 +128,9 @@ export default function CameraView() {
 
         const loop = async () => {
             if (videoRef.current && videoRef.current.readyState >= 2 && poseRef.current) {
-                await poseRef.current.send({ image: videoRef.current });
+                try {
+                    await poseRef.current.send({ image: videoRef.current });
+                } catch (e) {}
             }
             animFrameRef.current = requestAnimationFrame(loop);
         };
@@ -225,7 +239,7 @@ export default function CameraView() {
 
                 <div className={styles.exerciseInfo}>
                     <span className={styles.exerciseLabel}>Exercise</span>
-                    <span className={styles.exerciseName}>Squats</span>
+                    <span className={styles.exerciseName}>{exerciseName}</span>
                 </div>
 
                 <div className={styles.controls}>

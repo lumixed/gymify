@@ -9,19 +9,94 @@
 }
 
 .header {
+    margin-bottom: 32px;
+}
+
+.headerWithBack {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 24px;
 }
 
 .title {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
     letter-spacing: -0.5px;
 }
 
 .sub {
     color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 8px;
+}
+
+.backBtn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.backBtn:hover {
+    color: var(--text-primary);
+    border-color: var(--border-light);
+    background: var(--bg-card);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    text-align: left;
+    transition: all var(--transition-fast);
+}
+
+.card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(200, 245, 66, 0.05);
+}
+
+.cardIcon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    background: var(--bg-secondary);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+}
+
+.cardTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.cardDesc {
     font-size: 0.95rem;
-    margin-top: 6px;
+    color: var(--text-secondary);
+    line-height: 1.5;
 }
 
 @media (max-width: 768px) {
@@ -31,7 +106,16 @@
         padding-right: 16px;
     }
 
+    .headerWithBack {
+        flex-direction: column;
+        gap: 16px;
+    }
+
     .title {
-        font-size: 1.4rem;
+        font-size: 1.6rem;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
     }
 }
