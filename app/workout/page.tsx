@@ -8,9 +8,7 @@ export default function WorkoutPage() {
                 <h1 className={styles.title}>Workout Session</h1>
                 <p className={styles.sub}>Position yourself so your full body is visible to the camera.</p>
             </div>
-            <div className={styles.cameraWrapper}>
-                <CameraView />
-            </div>
+            <CameraView />
         </div>
     )
 }

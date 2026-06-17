@@ -24,11 +24,14 @@
     margin-top: 6px;
 }
 
-.cameraWrapper {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
+@media (max-width: 768px) {
+    .page {
+        padding-top: calc(var(--nav-height) + 20px);
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .title {
+        font-size: 1.4rem;
+    }
 }
