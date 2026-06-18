@@ -220,8 +220,25 @@
 }
 
 .startBtn:disabled {
-    opacity: 0.4;
+    opacity: 0.5;
     cursor: not-allowed;
+}
+
+.feedbackCard {
+    padding: 16px;
+    margin-bottom: 20px;
+    background: var(--bg-secondary);
+    border: 2px solid;
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all var(--transition-fast);
+}
+
+.feedbackText {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .pauseBtn {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { calculateAngle } from './utils'
+import { calculateAngle, playBeep } from './utils'
 import styles from './CameraView.module.css'
 
 let poseInstance: any = null;
@@ -18,6 +18,8 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
     const animFrameRef = useRef<number>(0);
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const initializedRef = useRef(false);
+    const feedbackMsgRef = useRef<string>('');
+    const feedbackColorRef = useRef<string>('#c8f542');
 
     const [isActive, setIsActive] = useState(false);
     const [reps, setReps] = useState(0);
@@ -26,11 +28,13 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
     const [elapsed, setElapsed] = useState(0);
     const [cameraReady, setCameraReady] = useState(false);
     const [modelLoading, setModelLoading] = useState(true);
+    const [feedback, setFeedback] = useState({ message: '', color: '#c8f542' });
 
     const syncUI = useCallback(() => {
         setReps(repCountRef.current);
         setAngle(Math.round(angleRef.current));
         setStage(stageRef.current);
+        setFeedback({ message: feedbackMsgRef.current, color: feedbackColorRef.current });
     }, []);
 
     useEffect(() => {
@@ -64,7 +68,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
 
             if (results.poseLandmarks) {
                 drawFns.drawConnectors(canvasCtx, results.poseLandmarks, poseConnections, {
-                    color: '#c8f542',
+                    color: feedbackColorRef.current,
                     lineWidth: 3
                 });
                 drawFns.drawLandmarks(canvasCtx, results.poseLandmarks, {
@@ -81,13 +85,30 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                 const kneeAngle = calculateAngle(hip, knee, ankle);
                 angleRef.current = kneeAngle;
 
+                if (stageRef.current === 'up') {
+                    if (kneeAngle > 160) {
+                        feedbackMsgRef.current = 'Ready!';
+                        feedbackColorRef.current = '#c8f542'; // Lime
+                    } else if (kneeAngle < 160 && kneeAngle > 90) {
+                        feedbackMsgRef.current = 'Go deeper!';
+                        feedbackColorRef.current = '#f97316'; // Orange
+                    }
+                }
+
                 if (kneeAngle < 90) {
-                    stageRef.current = 'down';
+                    if (stageRef.current === 'up') {
+                        stageRef.current = 'down';
+                    }
+                    feedbackMsgRef.current = 'Good depth! Now up!';
+                    feedbackColorRef.current = '#4ade80'; // Green
                 }
 
                 if (kneeAngle > 160 && stageRef.current === 'down') {
                     stageRef.current = 'up';
                     repCountRef.current += 1;
+                    playBeep();
+                    feedbackMsgRef.current = 'Great rep!';
+                    feedbackColorRef.current = '#c8f542';
                 }
 
                 syncUI();
@@ -160,6 +181,9 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
         setAngle(0);
         setStage('up');
         setElapsed(0);
+        setFeedback({ message: '', color: '#c8f542' });
+        feedbackMsgRef.current = '';
+        feedbackColorRef.current = '#c8f542';
 
         const canvasCtx = canvasRef.current?.getContext('2d');
         if (canvasCtx && canvasRef.current) {
@@ -216,6 +240,13 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
             </div>
 
             <div className={styles.panel}>
+                {isActive && feedback.message && (
+                    <div className={styles.feedbackCard} style={{ borderColor: feedback.color }}>
+                        <span className={styles.feedbackText} style={{ color: feedback.color }}>
+                            {feedback.message}
+                        </span>
+                    </div>
+                )}
                 <div className={styles.statsGrid}>
                     <div className={styles.statCard}>
                         <span className={styles.statValue}>{reps}</span>
