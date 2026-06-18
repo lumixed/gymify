@@ -20,6 +20,8 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
     const initializedRef = useRef(false);
     const feedbackMsgRef = useRef<string>('');
     const feedbackColorRef = useRef<string>('#c8f542');
+    const minAngleRef = useRef<number>(180);
+    const repScoresRef = useRef<number[]>([]);
 
     const [isActive, setIsActive] = useState(false);
     const [reps, setReps] = useState(0);
@@ -29,12 +31,14 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
     const [cameraReady, setCameraReady] = useState(false);
     const [modelLoading, setModelLoading] = useState(true);
     const [feedback, setFeedback] = useState({ message: '', color: '#c8f542' });
+    const [repScores, setRepScores] = useState<number[]>([]);
 
     const syncUI = useCallback(() => {
         setReps(repCountRef.current);
         setAngle(Math.round(angleRef.current));
         setStage(stageRef.current);
         setFeedback({ message: feedbackMsgRef.current, color: feedbackColorRef.current });
+        setRepScores([...repScoresRef.current]);
     }, []);
 
     useEffect(() => {
@@ -85,6 +89,12 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                 const kneeAngle = calculateAngle(hip, knee, ankle);
                 angleRef.current = kneeAngle;
 
+                if (stageRef.current === 'down') {
+                    if (kneeAngle < minAngleRef.current) {
+                        minAngleRef.current = kneeAngle;
+                    }
+                }
+
                 if (stageRef.current === 'up') {
                     if (kneeAngle > 160) {
                         feedbackMsgRef.current = 'Ready!';
@@ -98,6 +108,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                 if (kneeAngle < 90) {
                     if (stageRef.current === 'up') {
                         stageRef.current = 'down';
+                        minAngleRef.current = kneeAngle; // Reset minimum angle for new rep
                     }
                     feedbackMsgRef.current = 'Good depth! Now up!';
                     feedbackColorRef.current = '#4ade80'; // Green
@@ -107,7 +118,17 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                     stageRef.current = 'up';
                     repCountRef.current += 1;
                     playBeep();
-                    feedbackMsgRef.current = 'Great rep!';
+                    
+                    let score = 100;
+                    if (minAngleRef.current > 70) {
+                        score = Math.max(0, 100 - (minAngleRef.current - 70) * 2);
+                    }
+                    repScoresRef.current.push(Math.round(score));
+                    if (repScoresRef.current.length > 5) {
+                        repScoresRef.current.shift(); // keep last 5
+                    }
+
+                    feedbackMsgRef.current = `Great rep! Score: ${Math.round(score)}`;
                     feedbackColorRef.current = '#c8f542';
                 }
 
@@ -182,8 +203,11 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
         setStage('up');
         setElapsed(0);
         setFeedback({ message: '', color: '#c8f542' });
+        setRepScores([]);
         feedbackMsgRef.current = '';
         feedbackColorRef.current = '#c8f542';
+        repScoresRef.current = [];
+        minAngleRef.current = 180;
 
         const canvasCtx = canvasRef.current?.getContext('2d');
         if (canvasCtx && canvasRef.current) {
@@ -196,6 +220,8 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
         const secs = seconds % 60;
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
+
+    const avgScore = repScores.length > 0 ? Math.round(repScores.reduce((a, b) => a + b, 0) / repScores.length) : 0;
 
     return (
         <div className={styles.container}>
@@ -266,6 +292,28 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                         <span className={styles.statValue}>{formatTime(elapsed)}</span>
                         <span className={styles.statLabel}>Time</span>
                     </div>
+                </div>
+
+                <div className={styles.scoresSection}>
+                    <div className={styles.avgScoreCard}>
+                        <span className={styles.avgScoreValue}>{avgScore > 0 ? avgScore : '-'}</span>
+                        <span className={styles.avgScoreLabel}>Average Form Score</span>
+                    </div>
+                    {repScores.length > 0 && (
+                        <div className={styles.recentScores}>
+                            <span className={styles.recentScoresLabel}>Recent Reps:</span>
+                            <div className={styles.scoreDots}>
+                                {repScores.map((score, idx) => (
+                                    <div 
+                                        key={idx} 
+                                        className={styles.scoreDot}
+                                        style={{ backgroundColor: score >= 90 ? '#4ade80' : score >= 70 ? '#facc15' : '#ef4444' }}
+                                        title={`Score: ${score}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className={styles.exerciseInfo}>

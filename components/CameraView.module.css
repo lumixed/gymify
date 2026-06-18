@@ -194,29 +194,28 @@
 
 .controls {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: auto;
+    gap: 12px;
+}
+
+.startBtn, .pauseBtn, .resetBtn {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-fast);
 }
 
 .startBtn {
-    width: 100%;
-    padding: 14px;
     background: var(--accent);
-    color: #0e0e0e;
-    font-weight: 700;
-    font-size: 0.95rem;
-    border-radius: var(--radius-md);
-    transition: background var(--transition-fast), transform var(--transition-fast);
+    color: var(--bg-dark);
 }
 
 .startBtn:hover:not(:disabled) {
-    background: var(--accent-hover);
-    transform: translateY(-1px);
-}
-
-.startBtn:active:not(:disabled) {
-    transform: translateY(0);
+    background: #d4fa55;
+    transform: translateY(-2px);
 }
 
 .startBtn:disabled {
@@ -241,32 +240,78 @@
     text-transform: uppercase;
 }
 
+.scoresSection {
+    margin: 20px 0;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.avgScoreCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.avgScoreValue {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.avgScoreLabel {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.recentScores {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.recentScoresLabel {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.scoreDots {
+    display: flex;
+    gap: 8px;
+}
+
+.scoreDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
 .pauseBtn {
-    width: 100%;
-    padding: 14px;
-    background: #f97316;
-    color: #0e0e0e;
-    font-weight: 700;
-    font-size: 0.95rem;
-    border-radius: var(--radius-md);
-    transition: background var(--transition-fast), transform var(--transition-fast);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
 }
 
 .pauseBtn:hover {
-    background: #fb923c;
-    transform: translateY(-1px);
+    background: var(--border);
 }
 
 .resetBtn {
-    width: 100%;
-    padding: 12px;
     background: transparent;
     color: var(--text-secondary);
-    font-weight: 500;
-    font-size: 0.85rem;
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    transition: color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .resetBtn:hover:not(:disabled) {
