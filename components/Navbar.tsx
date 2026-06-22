@@ -2,12 +2,20 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { hasProfile } from '@/lib/profile'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
     const pathname = usePathname()
     const [menuOpen, setMenuOpen] = useState(false)
+    const [profileExists, setProfileExists] = useState(false)
+
+    useEffect(() => {
+        setProfileExists(hasProfile())
+    }, [pathname])
+
+    const ctaHref = profileExists ? '/workout' : '/onboarding'
 
     return (
         <nav className={styles.nav}>
@@ -41,11 +49,21 @@ export default function Navbar() {
                     >
                         Workout
                     </Link>
-                    <Link href="/workout" className={styles.cta} onClick={() => setMenuOpen(false)}>
-                        Start Training
+                    {profileExists && (
+                        <Link
+                            href="/onboarding"
+                            className={`${styles.link} ${pathname === '/onboarding' ? styles.active : ''}`}
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            Profile
+                        </Link>
+                    )}
+                    <Link href={ctaHref} className={styles.cta} onClick={() => setMenuOpen(false)}>
+                        {profileExists ? 'Start Training' : 'Get Started'}
                     </Link>
                 </div>
             </div>
         </nav>
     )
 }
+

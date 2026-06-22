@@ -1,7 +1,20 @@
+'use client'
+
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { hasProfile } from '@/lib/profile'
 import styles from './page.module.css'
 
 export default function Home() {
+    const [profileExists, setProfileExists] = useState(false)
+
+    useEffect(() => {
+        setProfileExists(hasProfile())
+    }, [])
+
+    const ctaHref = profileExists ? '/workout' : '/onboarding'
+    const ctaLabel = profileExists ? 'Start Workout' : 'Get Started'
+
     return (
         <div className={styles.page}>
             <section className={styles.hero}>
@@ -17,8 +30,8 @@ export default function Home() {
                         trainer watching you, minus the hourly rate.
                     </p>
                     <div className={styles.actions}>
-                        <Link href="/workout" className={styles.primaryBtn}>
-                            Start Workout
+                        <Link href={ctaHref} className={styles.primaryBtn}>
+                            {ctaLabel}
                             <span className={styles.arrow}>→</span>
                         </Link>
                         <a href="#how-it-works" className={styles.secondaryBtn}>
@@ -66,10 +79,10 @@ export default function Home() {
                 <div className={styles.featureGrid}>
                     <div className={styles.featureCard}>
                         <div className={styles.featureNumber}>01</div>
-                        <h3 className={styles.featureName}>Open your camera</h3>
+                        <h3 className={styles.featureName}>Set up your profile</h3>
                         <p className={styles.featureDesc}>
-                            Allow webcam access and position yourself so your full body
-                            is visible. That's literally it for setup.
+                            Tell us your goals, fitness level, and schedule.
+                            We'll build a personalized plan around you.
                         </p>
                     </div>
 
@@ -99,8 +112,8 @@ export default function Home() {
                     <p className={styles.ctaDesc}>
                         No sign-up required. No downloads. Just open your browser and start.
                     </p>
-                    <Link href="/workout" className={styles.primaryBtn}>
-                        Let's Go
+                    <Link href={ctaHref} className={styles.primaryBtn}>
+                        {ctaLabel}
                         <span className={styles.arrow}>→</span>
                     </Link>
                 </div>

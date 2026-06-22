@@ -1,0 +1,359 @@
+.page {
+    min-height: calc(100vh - var(--nav-height));
+    padding-top: calc(var(--nav-height) + 40px);
+    padding-bottom: 40px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.card {
+    width: 100%;
+    max-width: 560px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progressBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--border);
+}
+
+.progressFill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 0 3px 3px 0;
+    transition: width var(--transition-normal);
+}
+
+.stepContent {
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.slideIn {
+    animation: slideIn 0.25s ease forwards;
+}
+
+.slideBack {
+    animation: slideBack 0.25s ease forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideBack {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.stepInner {
+    display: flex;
+    flex-direction: column;
+}
+
+.emoji {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+
+.stepTitle {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.stepDesc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+}
+
+.fieldGroup {
+    margin-bottom: 20px;
+}
+
+.fieldRow {
+    display: flex;
+    gap: 16px;
+}
+
+.fieldRow .fieldGroup {
+    flex: 1;
+}
+
+.label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.input {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color var(--transition-fast);
+    outline: none;
+}
+
+.input:focus {
+    border-color: var(--accent);
+}
+
+.input::placeholder {
+    color: var(--text-muted);
+}
+
+.input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.input[type="number"]::-webkit-outer-spin-button,
+.input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.optionGrid {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.optionBtn {
+    flex: 1;
+    min-width: 100px;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+}
+
+.optionBtn:hover {
+    border-color: var(--border-light);
+    color: var(--text-primary);
+}
+
+.optionActive {
+    border-color: var(--accent);
+    background: var(--accent-muted);
+    color: var(--accent);
+}
+
+.cardGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.levelCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+}
+
+.levelCard:hover {
+    border-color: var(--border-light);
+    transform: translateY(-2px);
+}
+
+.levelActive {
+    border-color: var(--accent);
+    background: var(--accent-muted);
+}
+
+.levelEmoji {
+    font-size: 1.8rem;
+}
+
+.levelName {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.levelDesc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.levelActive .levelDesc {
+    color: var(--text-secondary);
+}
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.summaryItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.summaryLabel {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summaryValue {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    margin-top: 32px;
+    gap: 12px;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.backBtn {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.backBtn:hover {
+    color: var(--text-primary);
+}
+
+.nextBtn {
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #0e0e0e;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.nextBtn:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.nextBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.finishBtn {
+    padding: 16px 36px;
+    background: var(--accent);
+    color: #0e0e0e;
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.finishBtn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+    .card {
+        margin: 0 16px;
+        padding: 28px 20px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .cardGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .summaryGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .fieldRow {
+        flex-direction: column;
+        gap: 0;
+    }
+}
