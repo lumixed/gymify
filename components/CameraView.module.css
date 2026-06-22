@@ -172,12 +172,18 @@
 
 .exerciseInfo {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 12px;
     padding: 16px;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
+}
+
+.exerciseInfoRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .exerciseLabel {
@@ -190,6 +196,33 @@
 .exerciseName {
     font-weight: 600;
     font-size: 0.95rem;
+}
+
+.toggleRow {
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+}
+
+.toggleLabel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.toggleInput {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--accent);
+}
+
+.toggleText {
+    font-size: 0.95rem;
+    font-weight: 600;
 }
 
 .controls {

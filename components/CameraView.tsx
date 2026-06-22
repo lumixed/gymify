@@ -22,6 +22,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
     const feedbackColorRef = useRef<string>('#c8f542');
     const minAngleRef = useRef<number>(180);
     const repScoresRef = useRef<number[]>([]);
+    const activeSideRef = useRef<'Left' | 'Right'>('Left');
 
     const [isActive, setIsActive] = useState(false);
     const [reps, setReps] = useState(0);
@@ -32,6 +33,8 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
     const [modelLoading, setModelLoading] = useState(true);
     const [feedback, setFeedback] = useState({ message: '', color: '#c8f542' });
     const [repScores, setRepScores] = useState<number[]>([]);
+    const [activeSide, setActiveSide] = useState<'Left' | 'Right'>('Left');
+    const [mirrorCamera, setMirrorCamera] = useState(false);
 
     const syncUI = useCallback(() => {
         setReps(repCountRef.current);
@@ -39,6 +42,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
         setStage(stageRef.current);
         setFeedback({ message: feedbackMsgRef.current, color: feedbackColorRef.current });
         setRepScores([...repScoresRef.current]);
+        setActiveSide(activeSideRef.current);
     }, []);
 
     useEffect(() => {
@@ -82,9 +86,21 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                 });
 
                 const landmarks = results.poseLandmarks;
-                const hip = { x: landmarks[23].x, y: landmarks[23].y };
-                const knee = { x: landmarks[25].x, y: landmarks[25].y };
-                const ankle = { x: landmarks[27].x, y: landmarks[27].y };
+
+                // Bilateral detection: determine which side has higher average visibility
+                const leftVis = (landmarks[23].visibility + landmarks[25].visibility + landmarks[27].visibility) / 3;
+                const rightVis = (landmarks[24].visibility + landmarks[26].visibility + landmarks[28].visibility) / 3;
+                const isLeftVisible = leftVis >= rightVis;
+                
+                activeSideRef.current = isLeftVisible ? 'Left' : 'Right';
+
+                const hipIdx = isLeftVisible ? 23 : 24;
+                const kneeIdx = isLeftVisible ? 25 : 26;
+                const ankleIdx = isLeftVisible ? 27 : 28;
+
+                const hip = { x: landmarks[hipIdx].x, y: landmarks[hipIdx].y };
+                const knee = { x: landmarks[kneeIdx].x, y: landmarks[kneeIdx].y };
+                const ankle = { x: landmarks[ankleIdx].x, y: landmarks[ankleIdx].y };
 
                 const kneeAngle = calculateAngle(hip, knee, ankle);
                 angleRef.current = kneeAngle;
@@ -232,12 +248,14 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                         autoPlay
                         playsInline
                         className={styles.video}
+                        style={{ transform: mirrorCamera ? 'scaleX(-1)' : 'none' }}
                     />
                     <canvas
                         ref={canvasRef}
                         className={styles.canvas}
                         width={640}
                         height={480}
+                        style={{ transform: mirrorCamera ? 'scaleX(-1)' : 'none' }}
                     />
 
                     {modelLoading && (
@@ -317,8 +335,26 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                 </div>
 
                 <div className={styles.exerciseInfo}>
-                    <span className={styles.exerciseLabel}>Exercise</span>
-                    <span className={styles.exerciseName}>{exerciseName}</span>
+                    <div className={styles.exerciseInfoRow}>
+                        <span className={styles.exerciseLabel}>Exercise</span>
+                        <span className={styles.exerciseName}>{exerciseName}</span>
+                    </div>
+                    <div className={styles.exerciseInfoRow}>
+                        <span className={styles.exerciseLabel}>Tracking Side</span>
+                        <span className={styles.exerciseName}>{activeSide}</span>
+                    </div>
+                </div>
+
+                <div className={styles.toggleRow}>
+                    <label className={styles.toggleLabel}>
+                        <input 
+                            type="checkbox" 
+                            checked={mirrorCamera} 
+                            onChange={() => setMirrorCamera(prev => !prev)} 
+                            className={styles.toggleInput}
+                        />
+                        <span className={styles.toggleText}>Mirror Camera</span>
+                    </label>
                 </div>
 
                 <div className={styles.controls}>
