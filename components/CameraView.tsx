@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { calculateAngle, playBeep } from './utils'
+import { saveSession } from '@/lib/history'
 import styles from './CameraView.module.css'
 
 let poseInstance: any = null;
@@ -211,6 +212,22 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
 
     const handleReset = useCallback(() => {
         handlePause();
+
+        if (repCountRef.current > 0) {
+            const scores = [...repScoresRef.current];
+            const avg = scores.length > 0
+                ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+                : 0;
+            saveSession({
+                exercise: exerciseName,
+                reps: repCountRef.current,
+                avgScore: avg,
+                duration: elapsed,
+                side: activeSideRef.current,
+                scores,
+            });
+        }
+
         repCountRef.current = 0;
         stageRef.current = 'up';
         angleRef.current = 0;
@@ -229,7 +246,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
         if (canvasCtx && canvasRef.current) {
             canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         }
-    }, [handlePause]);
+    }, [handlePause, exerciseName, elapsed]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
