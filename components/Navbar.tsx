@@ -50,6 +50,13 @@ export default function Navbar() {
                         Workout
                     </Link>
                     <Link
+                        href="/plan"
+                        className={`${styles.link} ${pathname === '/plan' ? styles.active : ''}`}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Plan
+                    </Link>
+                    <Link
                         href="/history"
                         className={`${styles.link} ${pathname === '/history' ? styles.active : ''}`}
                         onClick={() => setMenuOpen(false)}
