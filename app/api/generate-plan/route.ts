@@ -62,7 +62,7 @@ Return ONLY valid JSON in this exact format, no markdown, no code blocks:
 
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-2.0-flash',
+            model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
                 temperature: 0.7,
@@ -71,11 +71,21 @@ Return ONLY valid JSON in this exact format, no markdown, no code blocks:
         })
 
         const text = response.text ?? ''
-        const plan = JSON.parse(text)
+        console.log('Raw Gemini response:', text.substring(0, 500))
+        
+        if (!text) {
+            return Response.json(
+                { error: 'Empty response from Gemini. Try again.' },
+                { status: 500 }
+            )
+        }
 
+        const plan = JSON.parse(text)
         return Response.json({ plan })
     } catch (err: any) {
-        console.error('Gemini API error:', err?.message || err)
+        const message = err?.message || err?.toString() || 'Unknown error'
+        console.error('Gemini API error:', message)
+
         return Response.json(
             { error: 'Failed to generate plan. Please try again.' },
             { status: 500 }
