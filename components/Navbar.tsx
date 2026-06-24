@@ -57,6 +57,13 @@ export default function Navbar() {
                         Plan
                     </Link>
                     <Link
+                        href="/nutrition"
+                        className={`${styles.link} ${pathname === '/nutrition' ? styles.active : ''}`}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Nutrition
+                    </Link>
+                    <Link
                         href="/history"
                         className={`${styles.link} ${pathname === '/history' ? styles.active : ''}`}
                         onClick={() => setMenuOpen(false)}
