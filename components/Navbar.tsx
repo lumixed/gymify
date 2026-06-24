@@ -15,7 +15,7 @@ export default function Navbar() {
         setProfileExists(hasProfile())
     }, [pathname])
 
-    const ctaHref = profileExists ? '/workout' : '/onboarding'
+    const ctaHref = profileExists ? '/dashboard' : '/onboarding'
 
     return (
         <nav className={styles.nav}>
@@ -35,13 +35,15 @@ export default function Navbar() {
                 </button>
 
                 <div className={`${styles.links} ${menuOpen ? styles.linksOpen : ''}`}>
-                    <Link
-                        href="/"
-                        className={`${styles.link} ${pathname === '/' ? styles.active : ''}`}
-                        onClick={() => setMenuOpen(false)}
-                    >
-                        Home
-                    </Link>
+                    {profileExists && (
+                        <Link
+                            href="/dashboard"
+                            className={`${styles.link} ${pathname === '/dashboard' ? styles.active : ''}`}
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            Dashboard
+                        </Link>
+                    )}
                     <Link
                         href="/workout"
                         className={`${styles.link} ${pathname === '/workout' ? styles.active : ''}`}
@@ -80,7 +82,7 @@ export default function Navbar() {
                         </Link>
                     )}
                     <Link href={ctaHref} className={styles.cta} onClick={() => setMenuOpen(false)}>
-                        {profileExists ? 'Start Training' : 'Get Started'}
+                        {profileExists ? 'Dashboard' : 'Get Started'}
                     </Link>
                 </div>
             </div>

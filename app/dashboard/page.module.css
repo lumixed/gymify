@@ -1,0 +1,456 @@
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: calc(var(--nav-height) + 32px) 24px 60px;
+}
+
+/* ── Greeting ──────────────────────────────────── */
+
+.greeting {
+    margin-bottom: 28px;
+}
+
+.greetingTitle {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.greetingSub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ── Quick actions ─────────────────────────────── */
+
+.quickActions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.quickAction {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.quickAction:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(200, 245, 66, 0.08);
+}
+
+.qaIcon {
+    font-size: 1.4rem;
+}
+
+.qaLabel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+/* ── Stats row ─────────────────────────────────── */
+
+.statsRow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 32px;
+}
+
+.statCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 16px 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.statValue {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--accent);
+}
+
+.statLabel {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+}
+
+/* ── Section ───────────────────────────────────── */
+
+.section {
+    margin-bottom: 28px;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.sectionTitle {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.sectionLink {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    transition: opacity var(--transition-fast);
+}
+
+.sectionLink:hover {
+    opacity: 0.8;
+}
+
+/* ── Today's workout card ──────────────────────── */
+
+.todayCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.todayTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.todayBadge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--accent-muted);
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.todayName {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+.todayFocus {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.startBtn {
+    padding: 10px 20px;
+    background: var(--accent);
+    color: #0e0e0e;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.startBtn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.todayExercises {
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.todayExRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.todayExName {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.todayExConfig {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* ── Nutrition card ────────────────────────────── */
+
+.nutritionCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.macroGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--border);
+}
+
+.macroItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 16px 8px;
+}
+
+.macroItem + .macroItem {
+    border-left: 1px solid var(--border);
+}
+
+.macroHighlight .macroVal {
+    color: var(--accent);
+}
+
+.macroVal {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.macroLbl {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+}
+
+.mealPreview {
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mealPreviewRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+}
+
+.mealPreviewName {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.mealPreviewCals {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* ── Session list ──────────────────────────────── */
+
+.sessionList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sessionRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.sessionInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.sessionExercise {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.sessionDate {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.sessionStats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sessionReps {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.sessionScore {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--bg-elevated);
+}
+
+.sessionScore[data-quality="good"] {
+    color: #4ade80;
+}
+
+.sessionScore[data-quality="ok"] {
+    color: #fbbf24;
+}
+
+.sessionScore[data-quality="poor"] {
+    color: #f87171;
+}
+
+/* ── Empty states ──────────────────────────────── */
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 24px;
+    text-align: center;
+}
+
+.emptyIcon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+}
+
+.emptyTitle {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.emptyDesc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+    max-width: 420px;
+    line-height: 1.6;
+}
+
+.actionBtn {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #0e0e0e;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.actionBtn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+.emptyCard {
+    padding: 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.emptyCardInline {
+    padding: 14px 20px;
+    text-align: center;
+}
+
+.emptyCardLink {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: inline-block;
+    transition: opacity var(--transition-fast);
+}
+
+.emptyCardLink:hover {
+    opacity: 0.8;
+}
+
+/* ── Responsive ────────────────────────────────── */
+
+@media (max-width: 600px) {
+    .quickActions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .statsRow {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .macroGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .macroItem:nth-child(3) {
+        border-left: none;
+    }
+
+    .macroItem:nth-child(3),
+    .macroItem:nth-child(4) {
+        border-top: 1px solid var(--border);
+    }
+
+    .todayTop {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .startBtn {
+        width: 100%;
+        text-align: center;
+    }
+}

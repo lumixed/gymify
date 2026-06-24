@@ -12,8 +12,8 @@ export default function Home() {
         setProfileExists(hasProfile())
     }, [])
 
-    const ctaHref = profileExists ? '/workout' : '/onboarding'
-    const ctaLabel = profileExists ? 'Start Workout' : 'Get Started'
+    const ctaHref = profileExists ? '/dashboard' : '/onboarding'
+    const ctaLabel = profileExists ? 'Go to Dashboard' : 'Get Started'
 
     return (
         <div className={styles.page}>
