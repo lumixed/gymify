@@ -88,9 +88,9 @@ export default function DashboardPage() {
                     <span className={styles.qaIcon}>🥗</span>
                     <span className={styles.qaLabel}>{nutrition ? 'Meals' : 'Nutrition'}</span>
                 </Link>
-                <Link href="/history" className={styles.quickAction}>
+                <Link href="/progress" className={styles.quickAction}>
                     <span className={styles.qaIcon}>📊</span>
-                    <span className={styles.qaLabel}>History</span>
+                    <span className={styles.qaLabel}>Progress</span>
                 </Link>
             </div>
 

@@ -72,6 +72,13 @@ export default function Navbar() {
                     >
                         History
                     </Link>
+                    <Link
+                        href="/progress"
+                        className={`${styles.link} ${pathname === '/progress' ? styles.active : ''}`}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Progress
+                    </Link>
                     {profileExists && (
                         <Link
                             href="/onboarding"
