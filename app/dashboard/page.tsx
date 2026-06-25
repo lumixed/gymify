@@ -76,9 +76,9 @@ export default function DashboardPage() {
 
             {/* ── Quick actions ────────────────── */}
             <div className={styles.quickActions}>
-                <Link href="/workout" className={styles.quickAction}>
-                    <span className={styles.qaIcon}>📷</span>
-                    <span className={styles.qaLabel}>Start Workout</span>
+                <Link href="/guided" className={styles.quickAction}>
+                    <span className={styles.qaIcon}>🏃</span>
+                    <span className={styles.qaLabel}>Guided</span>
                 </Link>
                 <Link href="/plan" className={styles.quickAction}>
                     <span className={styles.qaIcon}>📋</span>
@@ -133,7 +133,7 @@ export default function DashboardPage() {
                                 <h3 className={styles.todayName}>{todayPlan.name}</h3>
                                 <p className={styles.todayFocus}>{todayPlan.focus}</p>
                             </div>
-                            <Link href="/workout" className={styles.startBtn}>
+                            <Link href="/guided" className={styles.startBtn}>
                                 Start →
                             </Link>
                         </div>

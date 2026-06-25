@@ -1,0 +1,604 @@
+.page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: calc(var(--nav-height) + 32px) 24px 60px;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+/* ── Day selector ──────────────────────────────── */
+
+.daySelector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.daySelectorBtn {
+    padding: 8px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+.daySelectorBtn:hover {
+    border-color: var(--border-light);
+}
+
+.daySelectorActive {
+    background: var(--accent);
+    color: #0e0e0e;
+    border-color: var(--accent);
+}
+
+/* ── Preview card ──────────────────────────────── */
+
+.previewCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.previewHeader {
+    padding: 24px 24px 16px;
+}
+
+.previewBadge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--accent-muted);
+    padding: 3px 10px;
+    border-radius: 4px;
+}
+
+.previewName {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-top: 10px;
+}
+
+.previewFocus {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.previewStats {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.previewStat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 14px;
+    background: var(--bg-card);
+}
+
+.previewStatVal {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--accent);
+}
+
+.previewStatLbl {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+}
+
+.previewExList {
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.previewExRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.previewExIdx {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--border);
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.previewExInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.previewExName {
+    font-weight: 600;
+    font-size: 0.88rem;
+}
+
+.previewExConfig {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.startBtn {
+    width: 100%;
+    padding: 18px;
+    font-size: 1rem;
+    font-weight: 700;
+    background: var(--accent);
+    color: #0e0e0e;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background var(--transition-fast);
+}
+
+.startBtn:hover {
+    background: var(--accent-hover);
+}
+
+/* ── Exercise phase ────────────────────────────── */
+
+.exerciseTop {
+    margin-bottom: 28px;
+}
+
+.progressBarBg {
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progressBarFill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width var(--transition-normal);
+}
+
+.exerciseTopInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.exerciseTopLabel {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.exerciseTopTime {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.exerciseCard {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 40px 24px;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.exerciseName {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+}
+
+.setIndicator {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.setLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.setCurrent {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.setTotal {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.repTarget {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 24px;
+}
+
+.repValue {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.repLabel {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.exerciseTip {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    background: var(--accent-muted);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    line-height: 1.5;
+}
+
+.exerciseActions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.completeBtn {
+    width: 100%;
+    padding: 18px;
+    font-size: 1rem;
+    font-weight: 700;
+    background: var(--accent);
+    color: #0e0e0e;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all var(--transition-fast);
+    border: none;
+}
+
+.completeBtn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.skipBtn {
+    width: 100%;
+    padding: 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all var(--transition-fast);
+    background: none;
+}
+
+.skipBtn:hover {
+    color: var(--text-secondary);
+    border-color: var(--border-light);
+}
+
+.upNext {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.upNextLabel {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+}
+
+.upNextValue {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* ── Rest phase ────────────────────────────────── */
+
+.restContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - var(--nav-height) - 120px);
+    text-align: center;
+}
+
+.restLabel {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+}
+
+.timerRing {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 32px;
+}
+
+.timerSvg {
+    width: 100%;
+    height: 100%;
+}
+
+.timerCircle {
+    transition: stroke-dashoffset 1s linear;
+}
+
+.timerValue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.8rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+}
+
+.restInfo {
+    margin-bottom: 28px;
+}
+
+.restNext {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.skipRestBtn {
+    padding: 12px 28px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all var(--transition-fast);
+    background: none;
+}
+
+.skipRestBtn:hover {
+    color: var(--text-primary);
+    border-color: var(--border-light);
+}
+
+/* ── Complete phase ────────────────────────────── */
+
+.completeContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - var(--nav-height) - 120px);
+    text-align: center;
+}
+
+.completeIcon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    animation: bounceIn 0.5s ease;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.completeTitle {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.completeSub {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+}
+
+.completeStats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.completeStat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.completeStatVal {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+}
+
+.completeStatLbl {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+}
+
+.completeActions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.actionBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    background: var(--accent);
+    color: #0e0e0e;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.actionBtn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+.secondaryBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.secondaryBtn:hover {
+    color: var(--text-primary);
+    border-color: var(--border-light);
+}
+
+/* ── Empty state ───────────────────────────────── */
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 24px;
+    text-align: center;
+}
+
+.emptyIcon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+}
+
+.emptyTitle {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.emptyDesc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+/* ── Responsive ────────────────────────────────── */
+
+@media (max-width: 600px) {
+    .exerciseCard {
+        padding: 32px 20px;
+    }
+
+    .exerciseName {
+        font-size: 1.2rem;
+    }
+
+    .setCurrent {
+        font-size: 2rem;
+    }
+
+    .timerRing {
+        width: 160px;
+        height: 160px;
+    }
+
+    .timerValue {
+        font-size: 2.2rem;
+    }
+
+    .completeStats {
+        gap: 16px;
+    }
+
+    .completeStatVal {
+        font-size: 1.6rem;
+    }
+}
