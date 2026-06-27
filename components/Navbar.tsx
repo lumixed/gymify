@@ -86,6 +86,13 @@ export default function Navbar() {
                     >
                         Coach
                     </Link>
+                    <Link
+                        href="/measurements"
+                        className={`${styles.link} ${pathname === '/measurements' ? styles.active : ''}`}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Body
+                    </Link>
                     {profileExists && (
                         <Link
                             href="/onboarding"
