@@ -177,6 +177,9 @@ export default function PlanPage() {
                     </div>
 
                     <div className={styles.planActions}>
+                        <Link href="/checkin" className={styles.checkinBtn}>
+                            Phase Check-In →
+                        </Link>
                         <button className={styles.regenBtn} onClick={handleRegenerate}>
                             Regenerate Plan
                         </button>
