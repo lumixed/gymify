@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { useSession, signIn, signOut } from 'next-auth/react'
 import { hasProfile } from '@/lib/profile'
 import styles from './Navbar.module.css'
 
@@ -10,6 +11,9 @@ export default function Navbar() {
     const pathname = usePathname()
     const [menuOpen, setMenuOpen] = useState(false)
     const [profileExists, setProfileExists] = useState(false)
+
+    const { data: session, status } = useSession()
+    const isAuthenticated = status === 'authenticated'
 
     useEffect(() => {
         setProfileExists(hasProfile())
@@ -93,7 +97,7 @@ export default function Navbar() {
                     >
                         Body
                     </Link>
-                    {profileExists && (
+                    {profileExists && isAuthenticated && (
                         <Link
                             href="/onboarding"
                             className={`${styles.link} ${pathname === '/onboarding' ? styles.active : ''}`}
@@ -102,9 +106,21 @@ export default function Navbar() {
                             Profile
                         </Link>
                     )}
-                    <Link href={ctaHref} className={styles.cta} onClick={() => setMenuOpen(false)}>
-                        {profileExists ? 'Dashboard' : 'Get Started'}
-                    </Link>
+                    
+                    {isAuthenticated ? (
+                        <>
+                            <Link href={ctaHref} className={styles.cta} onClick={() => setMenuOpen(false)}>
+                                {profileExists ? 'Dashboard' : 'Get Started'}
+                            </Link>
+                            <button className={styles.link} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }} onClick={() => signOut()}>
+                                Sign Out
+                            </button>
+                        </>
+                    ) : (
+                        <button className={styles.cta} onClick={() => signIn()}>
+                            Sign In
+                        </button>
+                    )}
                 </div>
             </div>
         </nav>
