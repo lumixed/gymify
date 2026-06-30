@@ -19,6 +19,7 @@ export default function DashboardPage() {
     const [plan, setPlan] = useState<WorkoutPlan | null>(null)
     const [nutrition, setNutrition] = useState<NutritionPlan | null>(null)
     const [history, setHistory] = useState<WorkoutSession[]>([])
+    const [achievements, setAchievements] = useState<{ id: string, name: string, icon: string }[]>([])
     const [loaded, setLoaded] = useState(false)
 
     useEffect(() => {
@@ -26,7 +27,16 @@ export default function DashboardPage() {
         setPlan(loadPlan())
         setNutrition(loadNutrition())
         setHistory(loadHistory())
-        setLoaded(true)
+        
+        fetch('/api/db/achievements')
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.unlocked) {
+                    setAchievements(data.unlocked)
+                }
+            })
+            .catch(console.error)
+            .finally(() => setLoaded(true))
     }, [])
 
     if (!loaded) return null
@@ -117,6 +127,23 @@ export default function DashboardPage() {
                     <span className={styles.statLabel}>Total Time</span>
                 </div>
             </div>
+
+            {/* ── Achievements ─────────────────── */}
+            {achievements.length > 0 && (
+                <section className={styles.section}>
+                    <div className={styles.sectionHeader}>
+                        <h2 className={styles.sectionTitle}>Badges Earned</h2>
+                    </div>
+                    <div className={styles.badgesRow}>
+                        {achievements.map((ach) => (
+                            <div key={ach.id} className={styles.badgeCard} title={ach.name}>
+                                <span className={styles.badgeIcon}>{ach.icon}</span>
+                                <span className={styles.badgeName}>{ach.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* ── Today's workout ──────────────── */}
             <section className={styles.section}>

@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server'
 
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { evaluateAchievements } from '@/lib/achievements'
 
 // GET /api/db/sessions — load workout history
 export async function GET() {
@@ -46,6 +47,10 @@ export async function POST(request: NextRequest) {
             scoresJson: JSON.stringify(body.scores || []),
         },
     })
+
+    // Fire off achievement evaluation asynchronously
+    // No need to await if we don't return the badges in this specific route response
+    evaluateAchievements(session.user.id).catch(console.error)
 
     return Response.json({
         id: workoutSession.id,
