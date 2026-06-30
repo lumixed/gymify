@@ -1,12 +1,16 @@
 import { prisma } from '@/lib/db'
 import { NextRequest } from 'next/server'
 
-const DEFAULT_USER_ID = 'default-user'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET /api/db/plan — load the latest workout plan
 export async function GET() {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    
     const plan = await prisma.workoutPlan.findFirst({
-        where: { userId: DEFAULT_USER_ID },
+        where: { userId: session.user.id },
         orderBy: { generatedAt: 'desc' },
     })
 
@@ -22,11 +26,14 @@ export async function GET() {
 
 // POST /api/db/plan — save a workout plan
 export async function POST(request: NextRequest) {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
     const body = await request.json()
 
     const plan = await prisma.workoutPlan.create({
         data: {
-            userId: DEFAULT_USER_ID,
+            userId: session.user.id,
             split: body.split,
             daysJson: JSON.stringify(body.days),
             generatedAt: body.generatedAt ? new Date(body.generatedAt) : new Date(),
@@ -43,8 +50,11 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/db/plan — clear saved plans
 export async function DELETE() {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
     await prisma.workoutPlan.deleteMany({
-        where: { userId: DEFAULT_USER_ID },
+        where: { userId: session.user.id },
     })
     return Response.json({ success: true })
 }

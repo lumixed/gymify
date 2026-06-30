@@ -1,12 +1,16 @@
 import { prisma } from '@/lib/db'
 import { NextRequest } from 'next/server'
 
-const DEFAULT_USER_ID = 'default-user'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET /api/db/sessions — load workout history
 export async function GET() {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
     const sessions = await prisma.workoutSession.findMany({
-        where: { userId: DEFAULT_USER_ID },
+        where: { userId: session.user.id },
         orderBy: { date: 'desc' },
     })
 
@@ -26,11 +30,14 @@ export async function GET() {
 
 // POST /api/db/sessions — save a workout session
 export async function POST(request: NextRequest) {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
     const body = await request.json()
 
-    const session = await prisma.workoutSession.create({
+    const workoutSession = await prisma.workoutSession.create({
         data: {
-            userId: DEFAULT_USER_ID,
+            userId: session.user.id,
             exercise: body.exercise,
             reps: body.reps,
             avgScore: body.avgScore,
@@ -41,13 +48,13 @@ export async function POST(request: NextRequest) {
     })
 
     return Response.json({
-        id: session.id,
-        date: session.date.toISOString(),
-        exercise: session.exercise,
-        reps: session.reps,
-        avgScore: session.avgScore,
-        duration: session.duration,
-        side: session.side,
-        scores: JSON.parse(session.scoresJson),
+        id: workoutSession.id,
+        date: workoutSession.date.toISOString(),
+        exercise: workoutSession.exercise,
+        reps: workoutSession.reps,
+        avgScore: workoutSession.avgScore,
+        duration: workoutSession.duration,
+        side: workoutSession.side,
+        scores: JSON.parse(workoutSession.scoresJson),
     })
 }

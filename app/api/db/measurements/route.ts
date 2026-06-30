@@ -1,12 +1,16 @@
 import { prisma } from '@/lib/db'
 import { NextRequest } from 'next/server'
 
-const DEFAULT_USER_ID = 'default-user'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET /api/db/measurements — load measurement history
 export async function GET() {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
     const entries = await prisma.measurement.findMany({
-        where: { userId: DEFAULT_USER_ID },
+        where: { userId: session.user.id },
         orderBy: { date: 'desc' },
     })
 
@@ -26,11 +30,14 @@ export async function GET() {
 
 // POST /api/db/measurements — save a measurement
 export async function POST(request: NextRequest) {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
     const body = await request.json()
 
     const entry = await prisma.measurement.create({
         data: {
-            userId: DEFAULT_USER_ID,
+            userId: session.user.id,
             date: body.date ? new Date(body.date) : new Date(),
             weight: body.weight,
             bodyFat: body.bodyFat ?? null,
@@ -55,6 +62,9 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/db/measurements — delete a measurement by id (passed as query param)
 export async function DELETE(request: NextRequest) {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
 
@@ -62,6 +72,9 @@ export async function DELETE(request: NextRequest) {
         return Response.json({ error: 'id is required' }, { status: 400 })
     }
 
-    await prisma.measurement.delete({ where: { id } })
+    // Optional: check if measurement belongs to user before deleting
+    await prisma.measurement.delete({ 
+        where: { id } 
+    })
     return Response.json({ success: true })
 }

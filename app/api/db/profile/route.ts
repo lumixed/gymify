@@ -1,22 +1,18 @@
 import { prisma } from '@/lib/db'
 import { NextRequest } from 'next/server'
 
-// For now we use a single default user. Replace with auth later.
-const DEFAULT_USER_ID = 'default-user'
-
-async function ensureUser() {
-    let user = await prisma.user.findUnique({ where: { id: DEFAULT_USER_ID } })
-    if (!user) {
-        user = await prisma.user.create({ data: { id: DEFAULT_USER_ID } })
-    }
-    return user
-}
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 // GET /api/db/profile — load the user's profile
 export async function GET() {
-    await ensureUser()
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    const userId = session.user.id
+
     const profile = await prisma.profile.findUnique({
-        where: { userId: DEFAULT_USER_ID },
+        where: { userId },
     })
     if (!profile) return Response.json(null)
 
@@ -36,11 +32,14 @@ export async function GET() {
 
 // POST /api/db/profile — save/update the user's profile
 export async function POST(request: NextRequest) {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    const userId = session.user.id
     const body = await request.json()
-    await ensureUser()
 
     const data = {
-        userId: DEFAULT_USER_ID,
+        userId,
         name: body.name,
         age: body.age,
         gender: body.gender,
@@ -54,7 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     const profile = await prisma.profile.upsert({
-        where: { userId: DEFAULT_USER_ID },
+        where: { userId },
         create: data,
         update: data,
     })
