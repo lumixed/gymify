@@ -1,0 +1,86 @@
+// Gymify Database Schema
+// Using SQLite for local dev — swap to PostgreSQL for production
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  profile      Profile?
+  plans        WorkoutPlan[]
+  sessions     WorkoutSession[]
+  measurements Measurement[]
+}
+
+model Profile {
+  id           String @id @default(cuid())
+  userId       String @unique
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name         String
+  age          Int
+  gender       String   // male | female | other
+  height       Float    // cm
+  weight       Float    // kg
+  fitnessLevel String   // beginner | intermediate | advanced
+  goal         String   // lose-fat | build-muscle | stay-healthy | get-stronger
+  daysPerWeek  Int
+  equipment    String   // bodyweight | dumbbells | full-gym
+  injuries     String   @default("")
+
+  updatedAt    DateTime @updatedAt
+}
+
+model WorkoutPlan {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  split       String
+  daysJson    String   // JSON array of TrainingDay objects
+  generatedAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model WorkoutSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  exercise  String
+  reps      Int
+  avgScore  Float
+  duration  Int      // seconds
+  side      String
+  scoresJson String  // JSON array of score numbers
+  date      DateTime @default(now())
+
+  @@index([userId])
+  @@index([date])
+}
+
+model Measurement {
+  id      String   @id @default(cuid())
+  userId  String
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date    DateTime @default(now())
+  weight  Float    // kg
+  bodyFat Float?   // %
+  chest   Float?   // cm
+  waist   Float?   // cm
+  arms    Float?   // cm
+  thighs  Float?   // cm
+
+  @@index([userId])
+  @@index([date])
+}

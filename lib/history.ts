@@ -26,6 +26,13 @@ export function saveSession(session: Omit<WorkoutSession, 'id' | 'date'>): Worko
     if (typeof window !== 'undefined') {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(history))
     }
+    // Also persist to database (fire-and-forget)
+    fetch('/api/db/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(full),
+    }).catch(() => {})
+
     return full
 }
 
@@ -44,6 +51,26 @@ export function clearHistory() {
     if (typeof window === 'undefined') return
     localStorage.removeItem(STORAGE_KEY)
 }
+
+// ── Sync: pull from DB into localStorage on first load ──
+
+export async function syncHistoryFromDB(): Promise<WorkoutSession[]> {
+    try {
+        const res = await fetch('/api/db/sessions')
+        const data = await res.json()
+        if (Array.isArray(data) && data.length > 0) {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+            }
+            return data as WorkoutSession[]
+        }
+    } catch {
+        // DB unavailable
+    }
+    return loadHistory()
+}
+
+// ── Pure helpers (unchanged) ──
 
 export function getStats(history: WorkoutSession[]) {
     if (history.length === 0) {

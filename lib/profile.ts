@@ -13,9 +13,17 @@ export interface UserProfile {
 
 const STORAGE_KEY = 'gymify-profile'
 
+// ── Client-side functions (localStorage cache) ──
+
 export function saveProfile(profile: UserProfile) {
     if (typeof window === 'undefined') return
     localStorage.setItem(STORAGE_KEY, JSON.stringify(profile))
+    // Also persist to database (fire-and-forget)
+    fetch('/api/db/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(profile),
+    }).catch(() => {})
 }
 
 export function loadProfile(): UserProfile | null {
@@ -37,6 +45,26 @@ export function clearProfile() {
 export function hasProfile(): boolean {
     return loadProfile() !== null
 }
+
+// ── Sync: pull from DB into localStorage on first load ──
+
+export async function syncProfileFromDB(): Promise<UserProfile | null> {
+    try {
+        const res = await fetch('/api/db/profile')
+        const data = await res.json()
+        if (data && data.name) {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+            }
+            return data as UserProfile
+        }
+    } catch {
+        // DB unavailable — fall back to localStorage
+    }
+    return loadProfile()
+}
+
+// ── Pure calculation helpers (unchanged) ──
 
 export function calculateBMR(profile: UserProfile): number {
     if (profile.gender === 'male') {
