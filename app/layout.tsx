@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
+import PWARegistration from "@/components/PWARegistration"
 
 const inter = Inter({
     subsets: ["latin"],
@@ -12,6 +13,19 @@ const inter = Inter({
 export const metadata: Metadata = {
     title: "Gymify — Your AI Workout Partner",
     description: "Real-time pose detection and form correction. Get instant feedback on your exercise form using your webcam.",
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "black-translucent",
+        title: "Gymify",
+    },
+}
+
+export const viewport = {
+    themeColor: "#0e0e0e",
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
 }
 
 export default function RootLayout({
@@ -22,6 +36,7 @@ export default function RootLayout({
     return (
         <html lang="en" className={inter.variable}>
             <body>
+                <PWARegistration />
                 <Navbar />
                 <main>{children}</main>
                 <Footer />
