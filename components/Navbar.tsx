@@ -49,6 +49,13 @@ export default function Navbar() {
                         </Link>
                     )}
                     <Link
+                        href="/leaderboard"
+                        className={`${styles.link} ${pathname === '/leaderboard' ? styles.active : ''}`}
+                        onClick={() => setMenuOpen(false)}
+                    >
+                        Leaderboard
+                    </Link>
+                    <Link
                         href="/workout"
                         className={`${styles.link} ${pathname === '/workout' ? styles.active : ''}`}
                         onClick={() => setMenuOpen(false)}
