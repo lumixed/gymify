@@ -24,6 +24,8 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
     const minAngleRef = useRef<number>(180);
     const repScoresRef = useRef<number[]>([]);
     const activeSideRef = useRef<'Left' | 'Right'>('Left');
+    const lastSpeechRef = useRef<string>('');
+    const voiceEnabledRef = useRef<boolean>(true);
 
     const [isActive, setIsActive] = useState(false);
     const [reps, setReps] = useState(0);
@@ -36,6 +38,23 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
     const [repScores, setRepScores] = useState<number[]>([]);
     const [activeSide, setActiveSide] = useState<'Left' | 'Right'>('Left');
     const [mirrorCamera, setMirrorCamera] = useState(false);
+    const [voiceEnabled, setVoiceEnabled] = useState(true);
+
+    const setFeedbackAndSpeak = (msg: string, color: string) => {
+        feedbackMsgRef.current = msg;
+        feedbackColorRef.current = color;
+
+        if (voiceEnabledRef.current && msg !== lastSpeechRef.current && msg !== 'Ready!') {
+            // Cancel any ongoing speech to give immediate feedback
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(msg);
+                utterance.rate = 1.1; // Slightly faster for workout pace
+                window.speechSynthesis.speak(utterance);
+                lastSpeechRef.current = msg;
+            }
+        }
+    };
 
     const syncUI = useCallback(() => {
         setReps(repCountRef.current);
@@ -114,11 +133,9 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
 
                 if (stageRef.current === 'up') {
                     if (kneeAngle > 160) {
-                        feedbackMsgRef.current = 'Ready!';
-                        feedbackColorRef.current = '#c8f542'; // Lime
+                        setFeedbackAndSpeak('Ready!', '#c8f542');
                     } else if (kneeAngle < 160 && kneeAngle > 90) {
-                        feedbackMsgRef.current = 'Go deeper!';
-                        feedbackColorRef.current = '#f97316'; // Orange
+                        setFeedbackAndSpeak('Go deeper!', '#f97316');
                     }
                 }
 
@@ -127,8 +144,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                         stageRef.current = 'down';
                         minAngleRef.current = kneeAngle; // Reset minimum angle for new rep
                     }
-                    feedbackMsgRef.current = 'Good depth! Now up!';
-                    feedbackColorRef.current = '#4ade80'; // Green
+                    setFeedbackAndSpeak('Good depth! Now up!', '#4ade80');
                 }
 
                 if (kneeAngle > 160 && stageRef.current === 'down') {
@@ -145,8 +161,20 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                         repScoresRef.current.shift(); // keep last 5
                     }
 
+                    // For the speech, let's just say "Great rep" or "Good rep" to be concise, 
+                    // instead of reading out the score number every time.
+                    const speechMsg = score > 85 ? 'Great rep!' : 'Good rep!';
+                    
                     feedbackMsgRef.current = `Great rep! Score: ${Math.round(score)}`;
                     feedbackColorRef.current = '#c8f542';
+
+                    if (voiceEnabledRef.current) {
+                        window.speechSynthesis.cancel();
+                        const utterance = new SpeechSynthesisUtterance(speechMsg);
+                        utterance.rate = 1.1;
+                        window.speechSynthesis.speak(utterance);
+                        lastSpeechRef.current = speechMsg;
+                    }
                 }
 
                 syncUI();
@@ -239,6 +267,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
         setRepScores([]);
         feedbackMsgRef.current = '';
         feedbackColorRef.current = '#c8f542';
+        lastSpeechRef.current = '';
         repScoresRef.current = [];
         minAngleRef.current = 180;
 
@@ -371,6 +400,20 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                             className={styles.toggleInput}
                         />
                         <span className={styles.toggleText}>Mirror Camera</span>
+                    </label>
+                    <label className={styles.toggleLabel}>
+                        <input 
+                            type="checkbox" 
+                            checked={voiceEnabled} 
+                            onChange={() => {
+                                setVoiceEnabled(prev => {
+                                    voiceEnabledRef.current = !prev;
+                                    return !prev;
+                                });
+                            }} 
+                            className={styles.toggleInput}
+                        />
+                        <span className={styles.toggleText}>AI Voice Coach</span>
                     </label>
                 </div>
 
