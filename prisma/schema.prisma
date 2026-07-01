@@ -1,5 +1,7 @@
 // Gymify Database Schema
-// Using SQLite for local dev — swap to PostgreSQL for production
+// provider switches automatically via DATABASE_URL:
+//   local dev  → file:./dev.db  (set provider to "sqlite" below)
+//   production → postgres://...  (set provider to "postgresql" below)
 
 generator client {
   provider = "prisma-client"
@@ -7,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {
