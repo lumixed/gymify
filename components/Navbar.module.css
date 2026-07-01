@@ -5,9 +5,11 @@
     right: 0;
     z-index: 100;
     height: var(--nav-height);
-    background: rgba(14, 14, 14, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
+    background: rgba(14, 14, 14, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background var(--transition-normal);
 }
 
 .inner {
@@ -51,14 +53,36 @@
     color: var(--text-secondary);
     transition: color var(--transition-fast);
     font-weight: 500;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width var(--transition-normal);
 }
 
 .link:hover {
     color: var(--text-primary);
 }
 
+.link:hover::after {
+    width: 100%;
+}
+
 .active {
     color: var(--accent) !important;
+}
+
+.active::after {
+    width: 100% !important;
 }
 
 .cta {
@@ -67,19 +91,22 @@
     padding: 10px 22px;
     background: var(--accent);
     color: #0e0e0e;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.85rem;
     border-radius: var(--radius-full);
-    transition: background var(--transition-fast), transform var(--transition-fast);
+    transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    box-shadow: 0 0 0 0 rgba(200, 245, 66, 0);
 }
 
 .cta:hover {
     background: var(--accent-hover);
     transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(200, 245, 66, 0.25);
 }
 
 .cta:active {
     transform: translateY(0);
+    box-shadow: none;
 }
 
 .hamburger {
@@ -131,8 +158,9 @@
     }
 
     .linksOpen {
-        max-height: 300px;
+        max-height: 420px;
         padding: 16px 0;
+        animation: slideDown var(--transition-normal) both;
     }
 
     .link,

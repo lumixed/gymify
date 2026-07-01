@@ -194,7 +194,7 @@ export default function ProgressPage() {
 
     if (history.length === 0) {
         return (
-            <div className={styles.page}>
+            <div className={`${styles.page} animate-in`}>
                 <div className={styles.emptyState}>
                     <div className={styles.emptyIcon}>📊</div>
                     <h1 className={styles.emptyTitle}>No data yet</h1>
@@ -211,7 +211,7 @@ export default function ProgressPage() {
     }
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             <div className={styles.header}>
                 <h1 className={styles.title}>Progress</h1>
                 <p className={styles.subtitle}>

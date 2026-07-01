@@ -83,7 +83,7 @@ export default function NutritionPage() {
     }
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             <div className={styles.header}>
                 <h1 className={styles.title}>Nutrition Plan</h1>
                 {plan && (

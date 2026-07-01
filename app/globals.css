@@ -80,3 +80,109 @@ img {
         padding: 0 16px;
     }
 }
+
+/* ─────────────────────────────────────────────────────
+   GLOBAL ANIMATIONS & MICRO-INTERACTIONS
+───────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+}
+
+@keyframes pop {
+    0%   { transform: scale(0.85); opacity: 0; }
+    60%  { transform: scale(1.05); }
+    100% { transform: scale(1);    opacity: 1; }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Page entrance — apply to the top-level page wrapper */
+.animate-in {
+    animation: slideUp var(--transition-slow) both;
+}
+
+/* Staggered children — add data-stagger="1..6" on child elements */
+[data-stagger="1"] { animation-delay: 50ms; }
+[data-stagger="2"] { animation-delay: 100ms; }
+[data-stagger="3"] { animation-delay: 150ms; }
+[data-stagger="4"] { animation-delay: 200ms; }
+[data-stagger="5"] { animation-delay: 250ms; }
+[data-stagger="6"] { animation-delay: 300ms; }
+
+/* ── Skeleton loader ──────────────────────────────── */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--bg-card) 25%,
+        var(--bg-elevated) 50%,
+        var(--bg-card) 75%
+    );
+    background-size: 800px 100%;
+    animation: shimmer 1.4s infinite linear;
+    border-radius: var(--radius-sm);
+}
+
+/* ── Spinner ──────────────────────────────────────── */
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto;
+}
+
+/* ── Focus ring ───────────────────────────────────── */
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+}
+
+/* ── Interactive cards lift on hover ─────────────── */
+.card-hover {
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ── Accent pulse for CTAs ────────────────────────── */
+@keyframes accentGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200, 245, 66, 0); }
+    50%       { box-shadow: 0 0 0 6px rgba(200, 245, 66, 0.15); }
+}
+.cta-glow {
+    animation: accentGlow 2.5s ease-in-out infinite;
+}
+
+/* ── Toast / badge pop in ─────────────────────────── */
+.pop-in {
+    animation: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}

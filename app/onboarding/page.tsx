@@ -70,7 +70,7 @@ export default function OnboardingPage() {
     }
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             <div className={styles.card}>
                 {step !== 'welcome' && step !== 'done' && (
                     <div className={styles.progressBar}>

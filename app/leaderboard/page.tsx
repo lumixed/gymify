@@ -34,13 +34,21 @@ export default function LeaderboardPage() {
     if (loading) {
         return (
             <div className={styles.page}>
-                <div className={styles.loader}>Loading Global Leaderboard...</div>
+                <div className={styles.header}>
+                    <div className="skeleton" style={{ height: '40px', width: '60%', margin: '0 auto 12px' }} />
+                    <div className="skeleton" style={{ height: '18px', width: '45%', margin: '0 auto' }} />
+                </div>
+                <div className={styles.list}>
+                    {[...Array(8)].map((_, i) => (
+                        <div key={i} className="skeleton" style={{ height: '72px', borderRadius: '12px' }} />
+                    ))}
+                </div>
             </div>
         )
     }
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             <div className={styles.header}>
                 <h1 className={styles.title}>Global Leaderboard</h1>
                 <p className={styles.subtitle}>See how you stack up against the Gymify community.</p>

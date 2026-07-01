@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gymify-cache-v1';
+const CACHE_NAME = 'gymify-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/dashboard',
@@ -9,6 +9,7 @@ const ASSETS_TO_CACHE = [
   '/measurements',
   '/nutrition',
   '/progress',
+  '/leaderboard',
   '/icon-192.png',
   '/icon-512.png',
 ];

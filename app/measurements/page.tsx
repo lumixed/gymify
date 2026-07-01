@@ -133,7 +133,7 @@ export default function MeasurementsPage() {
     if (!loaded) return null
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             <div className={styles.header}>
                 <div>
                     <h1 className={styles.title}>Body Measurements</h1>

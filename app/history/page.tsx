@@ -32,7 +32,7 @@ export default function HistoryPage() {
     if (!loaded) return null
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
                     <h1 className={styles.title}>Workout History</h1>

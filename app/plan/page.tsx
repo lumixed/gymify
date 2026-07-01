@@ -72,7 +72,7 @@ export default function PlanPage() {
     const hasProfile = profile !== null
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             <div className={styles.header}>
                 <h1 className={styles.title}>Your Training Plan</h1>
                 {plan && (

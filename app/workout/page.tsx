@@ -36,7 +36,7 @@ export default function WorkoutPage() {
     const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             {!selectedExercise ? (
                 <>
                     <div className={styles.header}>

@@ -16,7 +16,7 @@ export default function Home() {
     const ctaLabel = profileExists ? 'Go to Dashboard' : 'Get Started'
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             <section className={styles.hero}>
                 <div className={styles.heroContent}>
                     <h1 className={styles.title}>

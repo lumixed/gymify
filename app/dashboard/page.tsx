@@ -39,7 +39,29 @@ export default function DashboardPage() {
             .finally(() => setLoaded(true))
     }, [])
 
-    if (!loaded) return null
+    if (!loaded) {
+        return (
+            <div className={styles.page}>
+                {/* Greeting skeleton */}
+                <div className={styles.greeting}>
+                    <div className="skeleton" style={{ height: '32px', width: '55%', marginBottom: '8px' }} />
+                    <div className="skeleton" style={{ height: '16px', width: '40%' }} />
+                </div>
+                {/* Quick actions skeleton */}
+                <div className={styles.quickActions}>
+                    {[...Array(4)].map((_, i) => (
+                        <div key={i} className="skeleton" style={{ height: '80px', borderRadius: '12px' }} />
+                    ))}
+                </div>
+                {/* Stats skeleton */}
+                <div className={styles.statsRow}>
+                    {[...Array(4)].map((_, i) => (
+                        <div key={i} className="skeleton" style={{ height: '72px', borderRadius: '12px' }} />
+                    ))}
+                </div>
+            </div>
+        )
+    }
 
     if (!profile) {
         return (
@@ -73,9 +95,9 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className={styles.page}>
+        <div className={`${styles.page} animate-in`}>
             {/* ── Greeting ─────────────────────── */}
-            <div className={styles.greeting}>
+            <div className={styles.greeting} data-stagger="1">
                 <h1 className={styles.greetingTitle}>
                     {getGreeting()}, {profile.name.split(' ')[0]}
                 </h1>
@@ -85,7 +107,7 @@ export default function DashboardPage() {
             </div>
 
             {/* ── Quick actions ────────────────── */}
-            <div className={styles.quickActions}>
+            <div className={styles.quickActions} data-stagger="2">
                 <Link href="/guided" className={styles.quickAction}>
                     <span className={styles.qaIcon}>🏃</span>
                     <span className={styles.qaLabel}>Guided</span>
