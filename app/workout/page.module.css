@@ -9,7 +9,7 @@
 }
 
 .header {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .headerWithBack {
@@ -49,10 +49,58 @@
     background: var(--bg-card);
 }
 
+/* ── Category Filter Bar ─────────────────── */
+.filterBar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.filterBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.filterBtn:hover {
+    border-color: var(--border-light);
+    color: var(--text-primary);
+    background: var(--bg-card);
+}
+
+.filterActive {
+    background: var(--accent-muted);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.filterActive:hover {
+    background: var(--accent-muted);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.filterIcon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* ── Exercise Grid ───────────────────────── */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
 }
 
 .card {
@@ -66,6 +114,20 @@
     cursor: pointer;
     text-align: left;
     transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
 }
 
 .card:hover {
@@ -74,29 +136,73 @@
     box-shadow: 0 10px 30px rgba(200, 245, 66, 0.05);
 }
 
+.card:hover::before {
+    opacity: 1;
+}
+
+.cardTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 14px;
+}
+
 .cardIcon {
-    font-size: 2.5rem;
-    margin-bottom: 16px;
+    font-size: 2.2rem;
     background: var(--bg-secondary);
-    width: 60px;
-    height: 60px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-md);
 }
 
+.cardBadge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    background: var(--bg-elevated);
+    color: var(--text-muted);
+}
+
 .cardTitle {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--text-primary);
 }
 
 .cardDesc {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
     line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.cardTips {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.tip {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.cardAngle {
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 500;
+    opacity: 0.7;
+    margin-top: auto;
 }
 
 @media (max-width: 768px) {
@@ -117,5 +223,17 @@
 
     .grid {
         grid-template-columns: 1fr;
+    }
+
+    .filterBar {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 4px;
+    }
+
+    .filterBar::-webkit-scrollbar {
+        display: none;
     }
 }

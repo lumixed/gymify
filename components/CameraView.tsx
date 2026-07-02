@@ -3,13 +3,52 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { calculateAngle, playBeep } from './utils'
 import { saveSession } from '@/lib/history'
+import { ExerciseConfig } from '@/lib/exercises'
 import styles from './CameraView.module.css'
 
 let poseInstance: any = null;
 let poseConnections: any = null;
 let drawFns: { drawConnectors: any; drawLandmarks: any } | null = null;
 
-export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?: string }) {
+interface CameraViewProps {
+    /** Full exercise configuration with landmarks & thresholds */
+    exerciseConfig?: ExerciseConfig;
+    /** Legacy: plain exercise name (backwards compatible) */
+    exerciseName?: string;
+}
+
+/** Default squat config used when only exerciseName is passed */
+const DEFAULT_CONFIG: ExerciseConfig = {
+    id: 'squats',
+    name: 'Squats',
+    description: '',
+    icon: '🦵',
+    category: 'lower',
+    landmarks: {
+        left: { a: 23, b: 25, c: 27 },
+        right: { a: 24, b: 26, c: 28 },
+    },
+    angleLabel: 'Knee Angle',
+    thresholds: {
+        downAngle: 90,
+        upAngle: 160,
+        readyAngle: 160,
+        goDeeper: { min: 90, max: 160 },
+    },
+    scoring: { idealMinAngle: 70, penaltyPerDegree: 2 },
+    feedback: {
+        ready: 'Ready!',
+        goDeeper: 'Go deeper!',
+        goodDepth: 'Good depth! Now up!',
+        repComplete: 'Great rep!',
+    },
+    tips: [],
+};
+
+export default function CameraView({ exerciseConfig, exerciseName = 'Squats' }: CameraViewProps) {
+    // Resolve the effective config
+    const config = exerciseConfig ?? { ...DEFAULT_CONFIG, name: exerciseName };
+
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const repCountRef = useRef(0);
@@ -26,6 +65,10 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
     const activeSideRef = useRef<'Left' | 'Right'>('Left');
     const lastSpeechRef = useRef<string>('');
     const voiceEnabledRef = useRef<boolean>(true);
+
+    // Store config in a ref so the MediaPipe callback always sees current values
+    const configRef = useRef(config);
+    configRef.current = config;
 
     const [isActive, setIsActive] = useState(false);
     const [reps, setReps] = useState(0);
@@ -44,7 +87,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
         feedbackMsgRef.current = msg;
         feedbackColorRef.current = color;
 
-        if (voiceEnabledRef.current && msg !== lastSpeechRef.current && msg !== 'Ready!') {
+        if (voiceEnabledRef.current && msg !== lastSpeechRef.current && msg !== config.feedback.ready) {
             // Cancel any ongoing speech to give immediate feedback
             if (window.speechSynthesis) {
                 window.speechSynthesis.cancel();
@@ -106,66 +149,78 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                 });
 
                 const landmarks = results.poseLandmarks;
+                const cfg = configRef.current;
 
-                // Bilateral detection: determine which side has higher average visibility
-                const leftVis = (landmarks[23].visibility + landmarks[25].visibility + landmarks[27].visibility) / 3;
-                const rightVis = (landmarks[24].visibility + landmarks[26].visibility + landmarks[28].visibility) / 3;
+                // Determine which side is more visible using the exercise-specific landmarks
+                const leftLm = cfg.landmarks.left;
+                const rightLm = cfg.landmarks.right;
+
+                const leftVis = (
+                    (landmarks[leftLm.a]?.visibility || 0) +
+                    (landmarks[leftLm.b]?.visibility || 0) +
+                    (landmarks[leftLm.c]?.visibility || 0)
+                ) / 3;
+                const rightVis = (
+                    (landmarks[rightLm.a]?.visibility || 0) +
+                    (landmarks[rightLm.b]?.visibility || 0) +
+                    (landmarks[rightLm.c]?.visibility || 0)
+                ) / 3;
                 const isLeftVisible = leftVis >= rightVis;
-                
+
                 activeSideRef.current = isLeftVisible ? 'Left' : 'Right';
 
-                const hipIdx = isLeftVisible ? 23 : 24;
-                const kneeIdx = isLeftVisible ? 25 : 26;
-                const ankleIdx = isLeftVisible ? 27 : 28;
+                const activeLm = isLeftVisible ? leftLm : rightLm;
 
-                const hip = { x: landmarks[hipIdx].x, y: landmarks[hipIdx].y };
-                const knee = { x: landmarks[kneeIdx].x, y: landmarks[kneeIdx].y };
-                const ankle = { x: landmarks[ankleIdx].x, y: landmarks[ankleIdx].y };
+                const pointA = { x: landmarks[activeLm.a].x, y: landmarks[activeLm.a].y };
+                const pointB = { x: landmarks[activeLm.b].x, y: landmarks[activeLm.b].y };
+                const pointC = { x: landmarks[activeLm.c].x, y: landmarks[activeLm.c].y };
 
-                const kneeAngle = calculateAngle(hip, knee, ankle);
-                angleRef.current = kneeAngle;
+                const measuredAngle = calculateAngle(pointA, pointB, pointC);
+                angleRef.current = measuredAngle;
 
+                const { thresholds, feedback: fb, scoring } = cfg;
+
+                // Track minimum angle during down phase
                 if (stageRef.current === 'down') {
-                    if (kneeAngle < minAngleRef.current) {
-                        minAngleRef.current = kneeAngle;
+                    if (measuredAngle < minAngleRef.current) {
+                        minAngleRef.current = measuredAngle;
                     }
                 }
 
+                // Phase detection & feedback
                 if (stageRef.current === 'up') {
-                    if (kneeAngle > 160) {
-                        setFeedbackAndSpeak('Ready!', '#c8f542');
-                    } else if (kneeAngle < 160 && kneeAngle > 90) {
-                        setFeedbackAndSpeak('Go deeper!', '#f97316');
+                    if (measuredAngle > thresholds.readyAngle) {
+                        setFeedbackAndSpeak(fb.ready, '#c8f542');
+                    } else if (thresholds.goDeeper && measuredAngle < thresholds.goDeeper.max && measuredAngle > thresholds.downAngle) {
+                        setFeedbackAndSpeak(fb.goDeeper, '#f97316');
                     }
                 }
 
-                if (kneeAngle < 90) {
+                if (measuredAngle < thresholds.downAngle) {
                     if (stageRef.current === 'up') {
                         stageRef.current = 'down';
-                        minAngleRef.current = kneeAngle; // Reset minimum angle for new rep
+                        minAngleRef.current = measuredAngle;
                     }
-                    setFeedbackAndSpeak('Good depth! Now up!', '#4ade80');
+                    setFeedbackAndSpeak(fb.goodDepth, '#4ade80');
                 }
 
-                if (kneeAngle > 160 && stageRef.current === 'down') {
+                if (measuredAngle > thresholds.upAngle && stageRef.current === 'down') {
                     stageRef.current = 'up';
                     repCountRef.current += 1;
                     playBeep();
                     
                     let score = 100;
-                    if (minAngleRef.current > 70) {
-                        score = Math.max(0, 100 - (minAngleRef.current - 70) * 2);
+                    if (minAngleRef.current > scoring.idealMinAngle) {
+                        score = Math.max(0, 100 - (minAngleRef.current - scoring.idealMinAngle) * scoring.penaltyPerDegree);
                     }
                     repScoresRef.current.push(Math.round(score));
                     if (repScoresRef.current.length > 5) {
                         repScoresRef.current.shift(); // keep last 5
                     }
 
-                    // For the speech, let's just say "Great rep" or "Good rep" to be concise, 
-                    // instead of reading out the score number every time.
-                    const speechMsg = score > 85 ? 'Great rep!' : 'Good rep!';
+                    const speechMsg = score > 85 ? fb.repComplete : 'Good rep!';
                     
-                    feedbackMsgRef.current = `Great rep! Score: ${Math.round(score)}`;
+                    feedbackMsgRef.current = `${fb.repComplete} Score: ${Math.round(score)}`;
                     feedbackColorRef.current = '#c8f542';
 
                     if (voiceEnabledRef.current) {
@@ -247,7 +302,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
                 : 0;
             saveSession({
-                exercise: exerciseName,
+                exercise: config.name,
                 reps: repCountRef.current,
                 avgScore: avg,
                 duration: elapsed,
@@ -275,7 +330,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
         if (canvasCtx && canvasRef.current) {
             canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         }
-    }, [handlePause, exerciseName, elapsed]);
+    }, [handlePause, config.name, elapsed]);
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60);
@@ -344,7 +399,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                     </div>
                     <div className={styles.statCard}>
                         <span className={styles.statValue}>{angle}°</span>
-                        <span className={styles.statLabel}>Knee Angle</span>
+                        <span className={styles.statLabel}>{config.angleLabel}</span>
                     </div>
                     <div className={styles.statCard}>
                         <span className={`${styles.statValue} ${stage === 'down' ? styles.valueDown : ''}`}>
@@ -383,7 +438,7 @@ export default function CameraView({ exerciseName = 'Squats' }: { exerciseName?:
                 <div className={styles.exerciseInfo}>
                     <div className={styles.exerciseInfoRow}>
                         <span className={styles.exerciseLabel}>Exercise</span>
-                        <span className={styles.exerciseName}>{exerciseName}</span>
+                        <span className={styles.exerciseName}>{config.name}</span>
                     </div>
                     <div className={styles.exerciseInfoRow}>
                         <span className={styles.exerciseLabel}>Tracking Side</span>
